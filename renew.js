@@ -101,6 +101,7 @@ async function sendTG(message) {
 
         console.log('🔍 正在寻觅红色的 [Renew now] 按钮...');
         const renewBtn = page.locator('button:has-text("Renew now")').last();
+        // const renewBtn = page.locator('button:has-text("Renew"), a:has-text("Renew")').first();
         
         let isVisible = false;
         try {
@@ -112,6 +113,9 @@ async function sendTG(message) {
         
         if (isVisible) {
           await renewBtn.click();
+          const renewBtn2 = page.locator('button:has-text("48 hours"), a:has-text("48 hours")').first();
+          await renewBtn2.waitFor({ state: 'visible', timeout: 6000 });
+          await renewBtn2.click();
           console.log(`🎉 【成功】${serverLabel} 已精准点击续期按钮！`);
           reportSummary.push(`🟢 <b>${serverLabel}</b>: 续期成功`);
           await page.waitForTimeout(3000);
@@ -136,6 +140,8 @@ async function sendTG(message) {
     // ================== 【第三阶段：汇总推送到 TG】 ==================
     const finalReport = `🤖 <b>Freemchost 自动续期报告</b>\n\n${reportSummary.join('\n')}\n\n<b>时间:</b> ${new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}`;
     await sendTG(finalReport);
+
+    // if (hasError) process.exit(1);
 
   } catch (globalError) {
     console.error('❌ 致命全局错误:', globalError.message);
