@@ -90,7 +90,7 @@ async function sendTG(message) {
       
       try {
         console.log(`📂 正在直达详情页: ${currentUrl}`);
-        await page.goto(currentUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await page.goto(currentUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
         console.log('🗂️ 正在切换到 [Manage] 标签页...');
         const manageTab = page.getByText('Manage', { exact: true });
@@ -133,7 +133,8 @@ async function sendTG(message) {
         const screenshotPath = path.join(screenshotDir, `error-server-${i+1}-${timestamp}.png`);
         try {
           await page.screenshot({ path: screenshotPath, fullPage: true });
-        } catch (snapErr) {}
+          console.log(`📸 现场截图已保存至: ${screenshotPath}`);
+        } catch (snapErr) { console.error('❌ 截图保存失败:', snapErr.message); }
       }
     }
 
