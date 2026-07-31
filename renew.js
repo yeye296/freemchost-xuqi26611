@@ -113,9 +113,14 @@ async function sendTG(message) {
         
         if (isVisible) {
           await renewBtn.click();
+          // 在点击前清理遮挡的广告/悬浮窗
+          await page.evaluate(() => {
+            const ads = document.querySelectorAll('.adsbygoogle, .grippy-host');
+            ads.forEach(ad => ad.remove());
+          });
           const renewBtn2 = page.locator('button:has-text("48 hours"), a:has-text("48 hours")').first();
           await renewBtn2.waitFor({ state: 'visible', timeout: 6000 });
-          await renewBtn2.click();
+          await renewBtn2.evaluate(node => node.click());
           console.log(`🎉 【成功】${serverLabel} 已精准点击续期按钮！`);
           reportSummary.push(`🟢 <b>${serverLabel}</b>: 续期成功`);
           await page.waitForTimeout(3000);
